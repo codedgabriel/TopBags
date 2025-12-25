@@ -74,25 +74,40 @@ async function fetchTokenMarketData(mint: string) {
 // 2. Fetch Earnings from Bags API
 async function fetchTokenEarningsData(mint: string) {
   try {
-    const res = await fetch(`https://public-api-v2.bags.fm/api/v1/token-launch/claim-stats?tokenMint=${mint}`, {
+    const url = `https://public-api-v2.bags.fm/api/v1/token-launch/claim-stats?tokenMint=${mint}`;
+    const res = await fetch(url, {
       headers: {
         'x-api-key': BAGS_API_KEY
       }
     });
     
-    if (!res.ok) return null;
+    const text = await res.text();
+    let data;
     
-    const data = await res.json();
-    const parsed = BagsClaimStatsSchema.safeParse(data);
+    try {
+      data = JSON.parse(text);
+    } catch {
+      console.warn(`Invalid JSON response for ${mint}:`, text);
+      return null;
+    }
     
-    if (!parsed.success) return null;
+    // Log the raw response for debugging
+    console.log(`Earnings data for ${mint}:`, data);
+    
+    // Handle both direct fields and wrapped response
+    const totalClaimed = data.totalClaimed ?? data?.data?.totalClaimed ?? 0;
+    const totalClaimedUsd = data.totalClaimedUsd ?? data?.data?.totalClaimedUsd ?? 0;
+    
+    if (totalClaimed === 0 && totalClaimedUsd === 0) {
+      console.warn(`No earnings data found for ${mint}`);
+    }
     
     return {
-      totalClaimed: parsed.data.totalClaimed || 0,
-      totalClaimedUsd: parsed.data.totalClaimedUsd || 0
+      totalClaimed: typeof totalClaimed === 'number' ? totalClaimed : 0,
+      totalClaimedUsd: typeof totalClaimedUsd === 'number' ? totalClaimedUsd : 0
     };
   } catch (e) {
-    console.error(`Failed to fetch earnings data for ${mint}`, e);
+    console.error(`Failed to fetch earnings data for ${mint}:`, e);
     return null;
   }
 }
@@ -118,7 +133,8 @@ export function useTopBags() {
           marketCap: marketData?.marketCap || 0,
           priceUsd: marketData?.priceUsd || 0,
           image: marketData?.image,
-          totalEarnings: earningsData?.totalClaimed || 0,
+          // Use totalClaimedUsd if available, otherwise totalClaimed
+          totalEarnings: earningsData?.totalClaimedUsd || earningsData?.totalClaimed || 0,
           loaded: !!marketData // Consider loaded if we got market data at least
         } as TokenData;
       });
@@ -131,9 +147,12 @@ export function useTopBags() {
         .map(r => r.status === 'fulfilled' ? r.value : null)
         .filter((t): t is TokenData => t !== null && t.loaded);
 
+      console.log('Final tokens data:', tokens);
       return tokens;
     },
     refetchInterval: 300000, // 5 minutes
-    staleTime: 60000, // 1 minute cache
+    staleTime: 0, // No cache - always fresh
+    retry: 3, // Retry failed requests 3 times
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 }
