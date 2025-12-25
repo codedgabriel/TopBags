@@ -19,7 +19,7 @@ export function Podium({ top3, type }: PodiumProps) {
     if (type === "marketCap") {
       return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(token.marketCap);
     } else {
-      return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(token.totalEarnings);
+      return `$${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(token.totalEarnings)}`;
     }
   };
 
