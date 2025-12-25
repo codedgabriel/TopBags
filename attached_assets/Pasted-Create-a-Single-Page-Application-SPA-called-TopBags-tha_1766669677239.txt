@@ -1,0 +1,196 @@
+Create a Single Page Application (SPA) called “TopBags” that displays two separate leaderboards for the Bags App ecosystem, running entirely on the frontend, with no backend, no server, and no frameworks.
+
+Leaderboards
+
+Top 3 Tokens by Market Cap
+
+Top 3 Tokens by Earnings (Fees Claimed)
+
+The application must work on static hosting such as Vercel, Netlify, or GitHub Pages.
+
+Core Constraints (CRITICAL)
+
+❌ No backend
+
+❌ No server
+
+❌ No frameworks
+
+❌ No token discovery
+
+❌ No CoinGecko / CoinMarketCap
+
+✅ Frontend-only JavaScript
+
+✅ All data fetched directly from public APIs
+
+✅ Token list must be hardcoded and treated as the single source of truth
+
+Tech Stack (Frontend Only)
+
+HTML5
+
+Tailwind CSS
+
+Vanilla JavaScript
+
+Static hosting compatible
+
+Fixed Token List (Source of Truth)
+
+Inside the JavaScript code, define the following static array and use ONLY these tokens:
+
+const BAGS_TOKENS = [
+  "CMx7yon2cLzHcXqgHsKJhuU3MmME6noWLQk2rAycBAGS",
+  "5N4AWkXZCbzTHLAjCo5ZW5JxD2k1rXaMhTwbm6TsBAGS",
+  "5EpbKX221NYVidK6A2nJGhtuLPvrPiQ6shknLbtjBAGS",
+  "FCPMdpvwxtWBvgDDsPuBb6wyf41ik2gtPqNN9jWSBAGS",
+  "EkJuyYyD3to61CHVPJn6wHb7xANxvqApnVJ4o2SdBAGS",
+  "9a5DxpveEUcPKjcULbHU1YMDq5FwUZFtPLxw6YRGBAGS",
+  "FdpEvMwXM99WsCr5zwrQ5BqgQTSLULpewpXjfs7ABAGS",
+  "dWd8vyAH9pQMMG1bkQWiGnyx8LjjuTDHsk8qcsCBAGS",
+  "4iVXoa1zeaQT7ySV86YNKfxP4QhDiicYrvZAUmBABAGS",
+  "Cw2doN2QR3e5FEsJurgX7wJG4RDeDjTxGsp3uZgKBAGS",
+  "BkXYYV9Y6sXzchKx7jNXrAMjZVVw17RxQm38781jBAGS",
+  "GQsefQc5YPE12wkMnYMxD8Rq1wrRX7f9iFgpBjNpBAGS",
+  "6bESwyduZ6hZGSE2S2CVpZvfDUzB5WgfuyK2vZ6yBAGS",
+  "DJGAdx7X6YiVk9anFbVAqgJtLjiNEeqAksn6WCQ9BAGS",
+  "3C6S7LGiyzdr5j1ZB2WfadPPzbwE15VxntmdtGY3BAGS",
+  "D3jYB29ZjSRwry6c266VNoeVkQWH8fqSsMCy2F8xBAGS",
+  "AuPMJ2VqiJd6gd2e65ALYhpSctzCYancBYLG5usfBAGS",
+  "EXdq6GgKTNGQiMyW3s61CwV9meTEdPM5Yd1EpdoXBAGS",
+  "Bm8MHt9vwK2RapFFZLa4AWfwLCzXAqCxanRj81xWBAGS",
+  "FZmnRD5sgDHznghxysygzpwiFooZxA62C9jNe18oBAGS",
+  "3cL96frxAmNwpPHFqHCuzXscGvdpzmaACjbx8sH5BAGS",
+  "3t1bNt1RoXZvrPDZp8SXEaaQarZRBFf7W6mi9Eb8BAGS",
+  "DQ4wBK1LoZwhahx18GuDTDCwbFZ8ZfFV3VSk3V3bBAGS",
+  "3REkm7R5HxCjAnNSMR8ktuv8Ghub71RxZzfWfWheBAGS",
+  "jkGKKj3MinQg8nkcWZBid6XxeSnn75Xoy9AqkqLBAGS",
+  "H47nC6VBFBPvDApUyyfrEHhhQVL72NsbtjQYK99EBAGS",
+  "Gj4TowizfdkRJNsTgBEkj2WpBZZmGE7o9nN8q6RhBAGS",
+  "643Bi6ckHT4ikS45pCkMqHbrHqFbAgA6hcEonKP5BAGS",
+  "DqWtuxjDY2gAqAweJKNeJne5HbarbXLZnaDUe92nBAGS",
+  "FpBL8Ta2XGw4VrpDrw8EH1Qm3mb1o4brHweASeszBAGS",
+  "EgJtueYVNtMZsmbXdn8ToBp3wT67Mt3RPDs434vbBAGS",
+  "2B5Rs88FYyFp4XciFrJ7zovvEeybiinZA8PXsSptBAGS",
+  "6ieMTp3XMjtLUGzzqEwekdgPCgBt9aW8nAE6uhuBBAGS",
+  "7pL98QbnrMZCe5FEKajSdTTgLn6Thf5CFaozLkayBAGS",
+  "CyXBDcVQuHyEDbG661Jf3iHqxyd9wNHhE2SiQdNrBAGS",
+  "B1AamSAei6RPWE6DNBgn3XGNVj9By55P8cKtDgPZBAGS",
+  "BpAiFPCqjvnz7ETKjxr6ZpEKKnGGBE7rNZUU7A7eBAGS",
+  "DEHoLKtoFGvLZeA29jsUHxS14MZhjokD52SABiMfBAGS",
+  "FhvBDEr46meW6NHWHNeShDzvbXWabNzyT6uGinEgBAGS",
+  "ESBCnCXtEZDmX8QnHU6qMZXd9mvjSAZVoYaLKKADBAGS",
+  "7Mxvi7bi5bnjELB4QNzQ4VrQEPeBgPbWwbfwE1ydBAGS"
+];
+
+Leaderboard 1 — Top Market Cap
+
+Data Source
+DexScreener Public API
+
+https://api.dexscreener.com/latest/dex/tokens/{tokenMint}
+
+
+Logic
+
+Fetch data for each token
+
+Use fdv (preferred) or fallback to marketCap
+
+Sort descending
+
+Display Top 3 only
+
+Label FDV as “Estimated Market Cap”
+
+Leaderboard 2 — Top Earnings (Fees Claimed)
+
+Data Source
+Bags App API — Token Claim Stats
+
+GET https://public-api-v2.bags.fm/api/v1/token-launch/claim-stats?tokenMint={tokenMint}
+
+
+Headers
+
+x-api-key: bags_prod_Tr-ghKn7wF2Xw3aMg_tX_h-9a_HaHfK-XJiduPVDNws
+
+
+Logic
+
+Fetch totalClaimed for each token
+
+Interpret totalClaimed as Total Earnings
+
+Sort descending
+
+Display Top 3 only
+
+⚠️ Clearly document in comments that:
+
+This API key is exposed for demo purposes
+
+A proxy or restricted key may be required in production
+
+Update Behavior
+
+Fetch both leaderboards on page load
+
+Auto-refresh every 5 minutes (300,000 ms)
+
+Handle API failures per token without breaking the app
+
+Design Requirements
+
+Theme
+
+Background: Pure black (#000)
+
+Accent: Vibrant neon green
+
+Crypto / terminal aesthetic
+
+Layout
+
+Fully responsive
+
+Centered content
+
+Two sections:
+
+Top Market Cap
+
+Top Earnings
+
+Podium-style layout:
+
+🥇 1st place centered and larger
+
+🥈 2nd and 🥉 3rd on the sides
+
+Header
+
+Title: TopBags
+
+Subtitle: Bags App Ecosystem Leaderboards
+
+Footer
+
+Created by dgcoinz
+
+Link: https://x.com/dgcoinz
+
+Expected Result
+
+A fully working frontend-only SPA that:
+
+Displays Top 3 Bags tokens by Market Cap
+
+Displays Top 3 Bags tokens by Earnings
+
+Updates every 5 minutes
+
+Runs entirely on static hosting
+
+Uses only the provided token list and APIs
