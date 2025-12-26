@@ -42,4 +42,4 @@ export const BAGS_TOKENS = [
   "7Mxvi7bi5bnjELB4QNzQ4VrQEPeBgPbWwbfwE1ydBAGS"
 ];
 
-export const BAGS_API_KEY = "bags_prod_Tr-ghKn7wF2Xw3aMg_tX_h-9a_HaHfK-XJiduPVDNws";
+export const BAGS_API_KEY = "bags_prod_jBZXtr2ODsKuBZ8lNBcfI_sveEztgtuRXNBJ44DUgQw";

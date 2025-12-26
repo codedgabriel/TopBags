@@ -74,38 +74,53 @@ async function fetchTokenMarketData(mint: string) {
 // 2. Fetch Earnings from Bags API
 async function fetchTokenEarningsData(mint: string) {
   try {
-    const url = `https://public-api-v2.bags.fm/api/v1/token-launch/claim-stats?tokenMint=${mint}`;
-    const res = await fetch(url, {
-      headers: {
-        'x-api-key': BAGS_API_KEY
+    // Try multiple endpoint variations
+    const endpoints = [
+      `https://public-api-v2.bags.fm/api/v1/token-launch/claim-stats?tokenMint=${mint}`,
+      `https://api.bags.fm/api/v1/token-launch/claim-stats?tokenMint=${mint}`,
+    ];
+    
+    for (const url of endpoints) {
+      try {
+        const res = await fetch(url, {
+          headers: {
+            'x-api-key': BAGS_API_KEY,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (res.status === 500 || res.status === 503) {
+          console.warn(`API error ${res.status} for ${mint} on ${url}`);
+          continue;
+        }
+        
+        const text = await res.text();
+        let data;
+        
+        try {
+          data = JSON.parse(text);
+        } catch {
+          console.warn(`Invalid JSON for ${mint}:`, text.substring(0, 100));
+          continue;
+        }
+        
+        // Handle both direct fields and wrapped response
+        const totalClaimed = data.totalClaimed ?? data?.data?.totalClaimed ?? 0;
+        const totalClaimedUsd = data.totalClaimedUsd ?? data?.data?.totalClaimedUsd ?? 0;
+        
+        if (typeof totalClaimed === 'number' || typeof totalClaimedUsd === 'number') {
+          return {
+            totalClaimed: typeof totalClaimed === 'number' ? totalClaimed : 0,
+            totalClaimedUsd: typeof totalClaimedUsd === 'number' ? totalClaimedUsd : 0
+          };
+        }
+      } catch (e) {
+        // Try next endpoint
+        continue;
       }
-    });
-    
-    const text = await res.text();
-    let data;
-    
-    try {
-      data = JSON.parse(text);
-    } catch {
-      console.warn(`Invalid JSON response for ${mint}:`, text);
-      return null;
     }
     
-    // Log the raw response for debugging
-    console.log(`Earnings data for ${mint}:`, data);
-    
-    // Handle both direct fields and wrapped response
-    const totalClaimed = data.totalClaimed ?? data?.data?.totalClaimed ?? 0;
-    const totalClaimedUsd = data.totalClaimedUsd ?? data?.data?.totalClaimedUsd ?? 0;
-    
-    if (totalClaimed === 0 && totalClaimedUsd === 0) {
-      console.warn(`No earnings data found for ${mint}`);
-    }
-    
-    return {
-      totalClaimed: typeof totalClaimed === 'number' ? totalClaimed : 0,
-      totalClaimedUsd: typeof totalClaimedUsd === 'number' ? totalClaimedUsd : 0
-    };
+    return null;
   } catch (e) {
     console.error(`Failed to fetch earnings data for ${mint}:`, e);
     return null;
@@ -118,8 +133,11 @@ export function useTopBags() {
   return useQuery({
     queryKey: ['top-bags-data'],
     queryFn: async () => {
-      // Create promises for all tokens
-      const promises = BAGS_TOKENS.map(async (mint) => {
+      // Create promises for all tokens with sequential delays to avoid rate limiting
+      const promises = BAGS_TOKENS.map(async (mint, index) => {
+        // Add a small delay based on index to spread out requests
+        await new Promise(resolve => setTimeout(resolve, index * 50));
+        
         // Fetch both data sources in parallel for this token
         const [marketData, earningsData] = await Promise.all([
           fetchTokenMarketData(mint),
