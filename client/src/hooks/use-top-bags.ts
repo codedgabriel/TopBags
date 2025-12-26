@@ -132,6 +132,11 @@ export function useTopBags() {
         .map(r => r.status === 'fulfilled' ? r.value : null)
         .filter((t): t is TokenData => t !== null && t.loaded);
 
+      // Debug logging for each token
+      tokens.forEach(token => {
+        console.log(`${token.symbol} (${token.mint.slice(0, 8)}...): $${token.totalEarnings.toFixed(2)}`);
+      });
+      
       console.log('Final tokens data:', tokens);
       return tokens;
     },
