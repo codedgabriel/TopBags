@@ -71,56 +71,23 @@ async function fetchTokenMarketData(mint: string) {
   }
 }
 
-// 2. Fetch Earnings from Bags API
+// 2. Fetch Earnings from Bags SDK via Backend
 async function fetchTokenEarningsData(mint: string) {
   try {
-    // Try multiple endpoint variations
-    const endpoints = [
-      `https://public-api-v2.bags.fm/api/v1/token-launch/claim-stats?tokenMint=${mint}`,
-      `https://api.bags.fm/api/v1/token-launch/claim-stats?tokenMint=${mint}`,
-    ];
+    const res = await fetch(`/api/token-fees/${mint}`);
     
-    for (const url of endpoints) {
-      try {
-        const res = await fetch(url, {
-          headers: {
-            'x-api-key': BAGS_API_KEY,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (res.status === 500 || res.status === 503) {
-          console.warn(`API error ${res.status} for ${mint} on ${url}`);
-          continue;
-        }
-        
-        const text = await res.text();
-        let data;
-        
-        try {
-          data = JSON.parse(text);
-        } catch {
-          console.warn(`Invalid JSON for ${mint}:`, text.substring(0, 100));
-          continue;
-        }
-        
-        // Handle both direct fields and wrapped response
-        const totalClaimed = data.totalClaimed ?? data?.data?.totalClaimed ?? 0;
-        const totalClaimedUsd = data.totalClaimedUsd ?? data?.data?.totalClaimedUsd ?? 0;
-        
-        if (typeof totalClaimed === 'number' || typeof totalClaimedUsd === 'number') {
-          return {
-            totalClaimed: typeof totalClaimed === 'number' ? totalClaimed : 0,
-            totalClaimedUsd: typeof totalClaimedUsd === 'number' ? totalClaimedUsd : 0
-          };
-        }
-      } catch (e) {
-        // Try next endpoint
-        continue;
-      }
+    if (!res.ok) {
+      console.warn(`Failed to fetch fees for ${mint}: ${res.status}`);
+      return null;
     }
     
-    return null;
+    const data = await res.json();
+    
+    // Return fees in USD (or use SOL value)
+    return {
+      totalClaimed: data.feesSOL || 0,
+      totalClaimedUsd: data.feesUSD || 0
+    };
   } catch (e) {
     console.error(`Failed to fetch earnings data for ${mint}:`, e);
     return null;
