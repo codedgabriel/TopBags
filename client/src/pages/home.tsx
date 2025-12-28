@@ -74,17 +74,17 @@ export default function Home() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center h-[400px]">
             <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
-            <div className="text-muted-foreground font-mono animate-pulse">ESTABLISHING UPLINK...</div>
+            <div className="text-muted-foreground font-mono animate-pulse">Establishing connection...</div>
           </div>
         ) : isError ? (
-          <div className="flex flex-col items-center justify-center h-[300px] border border-destructive/30 bg-destructive/5 rounded-xl p-8 max-w-lg mx-auto">
-            <AlertTriangle className="w-12 h-12 text-destructive mb-4" />
-            <h3 className="text-xl font-bold text-destructive mb-2">Connection Failure</h3>
+          <div className="flex flex-col items-center justify-center h-[300px] border border-primary/30 bg-primary/5 rounded-xl p-8 max-w-lg mx-auto">
+            <AlertTriangle className="w-12 h-12 text-primary mb-4" />
+            <h3 className="text-xl font-bold text-primary mb-2">Connection Failed</h3>
             <p className="text-center text-muted-foreground mb-6">
-              Unable to retrieve ecosystem metrics. This might be due to an API rate limit or connectivity issue.
+              Unable to retrieve ecosystem data. This might be due to network issues or API rate limits.
             </p>
-            <Button onClick={() => refetch()} variant="outline" className="border-destructive/50 text-destructive hover:bg-destructive/10">
-              Retry Connection
+            <Button onClick={() => refetch()} variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">
+              Retry
             </Button>
           </div>
         ) : (
@@ -122,11 +122,11 @@ export default function Home() {
               </p>
             </div>
             <div>
-              <h3 className="font-bold mb-3 text-sm uppercase tracking-wide">Data Sources</h3>
+              <h3 className="font-bold mb-3 text-sm uppercase tracking-wide">Sources</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="https://dexscreener.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">DexScreener (Market Cap)</a></li>
-                <li><a href="https://bags.fm" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Bags.fm (Earnings)</a></li>
-                <li><a href="https://solana.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Solana Network</a></li>
+                <li><a href="https://dexscreener.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">DexScreener</a></li>
+                <li><a href="https://bags.fm" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Bags.fm</a></li>
+                <li><a href="https://solana.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Solana</a></li>
               </ul>
             </div>
             <div>
@@ -155,15 +155,15 @@ export default function Home() {
           </div>
           <div className="border-t border-border/30 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} TopBags. All rights reserved.
+              © {new Date().getFullYear()} TopBags • Powered by Bags SDK
             </div>
             <div className="text-sm text-muted-foreground">
-              Created by 
+              Built by 
               <a 
                 href="https://x.com/dgcoinz" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-primary hover:text-primary/80 transition-colors ml-1"
+                className="text-primary hover:text-primary/80 transition-colors ml-1 font-bold"
               >
                 @dgcoinz
               </a>

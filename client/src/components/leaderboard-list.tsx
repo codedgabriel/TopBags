@@ -37,8 +37,8 @@ export function LeaderboardList({ tokens, type }: LeaderboardListProps) {
           navigator.clipboard.writeText(token.mint).then(() => {
             setCopied(true);
             toast({
-              title: "CA Copiado!",
-              description: `${token.symbol} adicionado à área de transferência`,
+              title: "Address Copied!",
+              description: `${token.symbol} contract address copied to clipboard`,
             });
             setTimeout(() => setCopied(false), 2000);
           });

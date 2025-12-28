@@ -28,24 +28,24 @@ export function Podium({ top3, type }: PodiumProps) {
   const label = type === "marketCap" ? "Market Cap" : "Total Earnings";
 
   return (
-    <div className="flex items-end justify-center gap-4 md:gap-8 h-[450px] w-full max-w-4xl mx-auto mb-12 px-4">
+    <div className="flex items-end justify-center gap-6 md:gap-10 h-[500px] w-full max-w-5xl mx-auto mb-12 px-4">
       {/* 2nd Place */}
       <PodiumStep 
         token={second} 
         place={2} 
         color="silver" 
-        height="h-[60%]" 
+        height="h-[55%]" 
         delay={0.2} 
         value={formatValue(second)}
         label={label}
       />
 
-      {/* 1st Place */}
+      {/* 1st Place - Much taller for emphasis */}
       <PodiumStep 
         token={first} 
         place={1} 
         color="gold" 
-        height="h-[80%]" 
+        height="h-[100%]" 
         delay={0}
         value={formatValue(first)}
         label={label}
@@ -57,7 +57,7 @@ export function Podium({ top3, type }: PodiumProps) {
         token={third} 
         place={3} 
         color="bronze" 
-        height="h-[50%]" 
+        height="h-[40%]" 
         delay={0.4}
         value={formatValue(third)}
         label={label}
@@ -123,14 +123,14 @@ function PodiumStep({
     navigator.clipboard.writeText(token.mint).then(() => {
       setCopied(true);
       toast({
-        title: "CA Copiado!",
-        description: `${token.symbol} adicionado à área de transferência`,
+        title: "Address Copied!",
+        description: `${token.symbol} contract address copied to clipboard`,
       });
       setTimeout(() => setCopied(false), 2000);
     }).catch(() => {
       toast({
-        title: "Erro",
-        description: "Não foi possível copiar o CA",
+        title: "Error",
+        description: "Failed to copy contract address",
         variant: "destructive"
       });
     });
