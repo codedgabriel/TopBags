@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { TokenData } from "@/hooks/use-top-bags";
 import { cn } from "@/lib/utils";
-import { Trophy, TrendingUp, DollarSign } from "lucide-react";
+import { Trophy, TrendingUp, DollarSign, Copy, Check } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface PodiumProps {
   top3: TokenData[];
@@ -83,29 +85,56 @@ function PodiumStep({
   label: string;
   isWinner?: boolean;
 }) {
+  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
+
   const colorStyles = {
     gold: {
-      bg: "bg-yellow-500/10",
-      border: "border-yellow-500",
+      bg: "bg-gradient-to-b from-yellow-500/15 to-yellow-500/5",
+      border: "border-yellow-500/60",
       text: "text-yellow-400",
-      shadow: "shadow-[0_0_30px_rgba(234,179,8,0.2)]",
-      badge: "bg-yellow-500 text-black"
+      shadow: "shadow-[0_0_40px_rgba(234,179,8,0.3)]",
+      badge: "bg-yellow-500 text-black",
+      glow: "hover:shadow-[0_0_60px_rgba(234,179,8,0.5)]",
+      accent: "bg-yellow-500/20"
     },
     silver: {
-      bg: "bg-gray-400/10",
-      border: "border-gray-400",
+      bg: "bg-gradient-to-b from-gray-400/15 to-gray-400/5",
+      border: "border-gray-400/60",
       text: "text-gray-300",
-      shadow: "shadow-[0_0_30px_rgba(156,163,175,0.2)]",
-      badge: "bg-gray-400 text-black"
+      shadow: "shadow-[0_0_40px_rgba(156,163,175,0.3)]",
+      badge: "bg-gray-400 text-black",
+      glow: "hover:shadow-[0_0_60px_rgba(156,163,175,0.5)]",
+      accent: "bg-gray-400/20"
     },
     bronze: {
-      bg: "bg-orange-700/10",
-      border: "border-orange-700",
+      bg: "bg-gradient-to-b from-orange-700/15 to-orange-700/5",
+      border: "border-orange-700/60",
       text: "text-orange-500",
-      shadow: "shadow-[0_0_30px_rgba(194,65,12,0.2)]",
-      badge: "bg-orange-700 text-white"
+      shadow: "shadow-[0_0_40px_rgba(194,65,12,0.3)]",
+      badge: "bg-orange-700 text-white",
+      glow: "hover:shadow-[0_0_60px_rgba(194,65,12,0.5)]",
+      accent: "bg-orange-700/20"
     }
   }[color];
+
+  const handleCopyCA = () => {
+    if (!token) return;
+    navigator.clipboard.writeText(token.mint).then(() => {
+      setCopied(true);
+      toast({
+        title: "CA Copiado!",
+        description: `${token.symbol} adicionado à área de transferência`,
+      });
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {
+      toast({
+        title: "Erro",
+        description: "Não foi possível copiar o CA",
+        variant: "destructive"
+      });
+    });
+  };
 
   return (
     <div className={cn("flex flex-col items-center justify-end w-1/3 max-w-[200px] h-full")}>
@@ -114,12 +143,14 @@ function PodiumStep({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: delay + 0.3, duration: 0.5 }}
-        className="mb-4 text-center w-full"
+        className="mb-4 text-center w-full cursor-pointer group"
+        onClick={handleCopyCA}
       >
         {token ? (
           <>
-            <div className="relative mx-auto w-16 h-16 mb-2 rounded-full border-2 border-border overflow-hidden bg-black/50">
-               {/* Fallback image if DexScreener img fails, but simple img tag usually works */}
+            <div className="relative mx-auto w-16 h-16 mb-3 rounded-full border-2 border-border overflow-hidden bg-black/50 transition-all duration-300 group-hover:shadow-lg group-hover:scale-110" style={{
+              boxShadow: copied ? `0 0 30px ${color === 'gold' ? 'rgba(234,179,8,0.6)' : color === 'silver' ? 'rgba(156,163,175,0.6)' : 'rgba(194,65,12,0.6)'}` : 'none'
+            }}>
                <img 
                  src={token.image} 
                  alt={token.symbol}
@@ -132,14 +163,25 @@ function PodiumStep({
                  {place}
                </div>
             </div>
-            <div className={cn("font-bold text-lg md:text-xl truncate", isWinner ? "text-neon" : "text-white")}>
+            <div className={cn("font-bold text-lg md:text-xl truncate transition-colors duration-200", isWinner ? "text-primary" : "text-white", "group-hover:text-primary")}>
               {token.symbol}
             </div>
-            <div className={cn("text-xs md:text-sm font-mono mt-1", colorStyles.text)}>
+            <div className={cn("text-xs md:text-sm font-mono mt-2 font-bold transition-colors duration-200", colorStyles.text)}>
               {value}
             </div>
-            <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">
+            <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-2 flex items-center justify-center gap-1">
               {label}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: copied ? 1 : 0, scale: copied ? 1 : 0.8 }}
+                transition={{ duration: 0.2 }}
+              >
+                {copied ? (
+                  <Check className="w-3 h-3 text-primary" />
+                ) : (
+                  <Copy className="w-3 h-3 text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                )}
+              </motion.div>
             </div>
           </>
         ) : (
@@ -153,26 +195,35 @@ function PodiumStep({
         animate={{ height: "100%" }}
         transition={{ delay, duration: 0.8, ease: "circOut" }}
         className={cn(
-          "w-full rounded-t-lg border-t-4 border-x border-b-0 backdrop-blur-sm relative overflow-hidden group",
+          "w-full rounded-t-2xl border-t-4 border-x border-b-0 backdrop-blur-md relative overflow-hidden group transition-all duration-300 cursor-pointer",
           height,
           colorStyles.bg,
           colorStyles.border,
-          colorStyles.shadow
+          colorStyles.shadow,
+          colorStyles.glow
         )}
       >
-        {/* Subtle grid pattern inside podium */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-30" />
+        {/* Animated gradient border on hover */}
+        <div className="absolute inset-0 rounded-t-2xl border-t-4 border-x border-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{
+          borderColor: color === 'gold' ? 'rgba(234,179,8,0.8)' : color === 'silver' ? 'rgba(156,163,175,0.8)' : 'rgba(194,65,12,0.8)'
+        }} />
+
+        {/* Grid pattern inside podium */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-20 group-hover:opacity-40 transition-opacity duration-300" />
+        
+        {/* Accent color on hover */}
+        <div className={cn("absolute inset-0 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300", colorStyles.accent)} />
         
         {/* Rank Number Large */}
         <div className={cn(
-          "absolute bottom-0 w-full text-center text-6xl font-black opacity-10 select-none pb-4",
+          "absolute bottom-0 w-full text-center text-6xl font-black select-none pb-4 opacity-15 group-hover:opacity-25 transition-opacity duration-300",
           colorStyles.text
         )}>
           {place}
         </div>
 
         {/* Shine effect on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-transparent -translate-y-full group-hover:translate-y-full transition-transform duration-1000 ease-in-out" />
+        <div className="absolute inset-0 rounded-t-2xl bg-gradient-to-t from-transparent via-white/10 to-transparent -translate-y-full group-hover:translate-y-full transition-transform duration-1000 ease-in-out opacity-0 group-hover:opacity-100" />
       </motion.div>
     </div>
   );
