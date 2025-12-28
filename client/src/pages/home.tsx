@@ -1,7 +1,7 @@
 import { useTopBags } from "@/hooks/use-top-bags";
 import { Podium } from "@/components/podium";
 import { LeaderboardList } from "@/components/leaderboard-list";
-import { Loader2, Terminal, RefreshCw, AlertTriangle } from "lucide-react";
+import { Loader2, Terminal, AlertTriangle, Github, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -27,7 +27,7 @@ export default function Home() {
       <div className="fixed inset-0 pointer-events-none bg-grid-pattern opacity-[0.03] z-0" />
 
       {/* Header */}
-      <header className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
+      <header className="border-b border-border/50 bg-background/80 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Terminal className="text-primary w-6 h-6" />
@@ -40,30 +40,11 @@ export default function Home() {
                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                Live Data
              </div>
-             <Button 
-               variant="outline" 
-               size="sm" 
-               onClick={() => refetch()}
-               disabled={isRefetching || isLoading}
-               className="border-primary/20 hover:border-primary text-primary hover:bg-primary/10"
-             >
-               <RefreshCw className={`w-3 h-3 mr-2 ${isRefetching ? 'animate-spin' : ''}`} />
-               {isRefetching ? "SYNCING..." : "REFRESH"}
-             </Button>
           </div>
         </div>
       </header>
 
       <main className="flex-grow container mx-auto px-4 py-8 z-10 relative">
-        <div className="text-center mb-10 max-w-2xl mx-auto">
-          <h2 className="text-3xl md:text-5xl font-black mb-4 uppercase tracking-tight">
-             Ecosystem <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-green-300 text-neon">Leaderboard</span>
-          </h2>
-          <p className="text-muted-foreground">
-            Real-time tracking of the Bags App ecosystem. Ranked by market capitalization and confirmed earnings.
-          </p>
-        </div>
-
         {/* Tabs */}
         <div className="flex justify-center mb-12">
           <div className="bg-secondary/50 p-1 rounded-lg border border-border inline-flex">
@@ -128,21 +109,65 @@ export default function Home() {
         )}
       </main>
 
-      <footer className="border-t border-border py-8 mt-12 bg-black">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="text-sm text-muted-foreground">
-            TopBags © {new Date().getFullYear()}
+      <footer className="border-t border-primary/10 py-8 mt-12 bg-gradient-to-t from-primary/5 to-transparent">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Terminal className="text-primary w-5 h-5" />
+                <h3 className="font-bold text-primary">TopBags</h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Real-time leaderboards for the Bags App ecosystem
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold mb-3 text-sm uppercase tracking-wide">Data Sources</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="https://dexscreener.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">DexScreener (Market Cap)</a></li>
+                <li><a href="https://bags.fm" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Bags.fm (Earnings)</a></li>
+                <li><a href="https://solana.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Solana Network</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold mb-3 text-sm uppercase tracking-wide">Follow</h3>
+              <div className="flex items-center gap-3">
+                <a 
+                  href="https://x.com/dgcoinz" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                  data-testid="link-twitter-creator"
+                >
+                  <Twitter className="w-5 h-5" />
+                </a>
+                <a 
+                  href="https://github.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                  data-testid="link-github-repo"
+                >
+                  <Github className="w-5 h-5" />
+                </a>
+              </div>
+            </div>
           </div>
-          <div className="text-sm text-muted-foreground flex items-center gap-1">
-            Created by 
-            <a 
-              href="https://x.com/dgcoinz" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary hover:underline hover:shadow-[0_0_10px_rgba(57,255,20,0.5)] transition-all"
-            >
-              dgcoinz
-            </a>
+          <div className="border-t border-border/30 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} TopBags. All rights reserved.
+            </div>
+            <div className="text-sm text-muted-foreground">
+              Created by 
+              <a 
+                href="https://x.com/dgcoinz" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary/80 transition-colors ml-1"
+              >
+                @dgcoinz
+              </a>
+            </div>
           </div>
         </div>
       </footer>

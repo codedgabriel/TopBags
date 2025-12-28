@@ -137,14 +137,13 @@ function PodiumStep({
   };
 
   return (
-    <div className={cn("flex flex-col items-center justify-end w-1/3 max-w-[200px] h-full")}>
+    <div className={cn("flex flex-col items-center justify-end w-1/3 max-w-[200px] h-full cursor-pointer group")} onClick={handleCopyCA}>
       {/* Token Info Card */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: delay + 0.3, duration: 0.5 }}
-        className="mb-4 text-center w-full cursor-pointer group"
-        onClick={handleCopyCA}
+        className="mb-4 text-center w-full"
       >
         {token ? (
           <>

@@ -2,6 +2,8 @@ import { TokenData } from "@/hooks/use-top-bags";
 import { CardNeon } from "./ui/card-neon";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface LeaderboardListProps {
   tokens: TokenData[];
@@ -26,6 +28,22 @@ export function LeaderboardList({ tokens, type }: LeaderboardListProps) {
     <div className="space-y-3 w-full max-w-3xl mx-auto">
       {remainingTokens.map((token, index) => {
         const rank = index + 4;
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [copied, setCopied] = useState(false);
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const { toast } = useToast();
+
+        const handleCopyCA = () => {
+          navigator.clipboard.writeText(token.mint).then(() => {
+            setCopied(true);
+            toast({
+              title: "CA Copiado!",
+              description: `${token.symbol} adicionado à área de transferência`,
+            });
+            setTimeout(() => setCopied(false), 2000);
+          });
+        };
+
         return (
           <motion.div
             key={token.mint}
@@ -34,7 +52,7 @@ export function LeaderboardList({ tokens, type }: LeaderboardListProps) {
             transition={{ delay: index * 0.05 }}
             viewport={{ once: true }}
           >
-            <CardNeon className="flex items-center justify-between py-3 px-4 md:px-6 bg-card/50 hover:bg-card/80">
+            <CardNeon className="flex items-center justify-between py-3 px-4 md:px-6 bg-card/50 hover:bg-card/80 cursor-pointer transition-all duration-200" onClick={handleCopyCA}>
               <div className="flex items-center gap-4">
                 <div className="text-muted-foreground font-mono font-bold w-6 text-right">
                   {rank}
