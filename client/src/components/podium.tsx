@@ -26,8 +26,8 @@ export function Podium({ top3, type }: PodiumProps) {
 
   return (
     <div className="w-full max-w-5xl mx-auto mb-12 px-4">
-      <div className="flex items-end justify-center gap-8 h-72">
-        {/* 3rd Place - h-46 */}
+      <div className="flex items-end justify-center gap-8 h-64">
+        {/* 3rd Place - h-48 */}
         {third && (
           <PodiumCard
             token={third}
@@ -35,12 +35,12 @@ export function Podium({ top3, type }: PodiumProps) {
             value={formatValue(third)}
             label={label}
             color="bronze"
-            height="h-46"
+            height="h-48"
             delay={0.4}
           />
         )}
 
-        {/* 1st Place - h-66 (tallest) */}
+        {/* 1st Place - h-64 (tallest) */}
         {first && (
           <PodiumCard
             token={first}
@@ -48,7 +48,7 @@ export function Podium({ top3, type }: PodiumProps) {
             value={formatValue(first)}
             label={label}
             color="gold"
-            height="h-66"
+            height="h-64"
             delay={0}
             isWinner
           />
