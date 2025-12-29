@@ -28,19 +28,19 @@ export function Podium({ top3, type }: PodiumProps) {
   const label = type === "marketCap" ? "Market Cap" : "Total Earnings";
 
   return (
-    <div className="flex items-end justify-center gap-6 md:gap-10 h-[500px] w-full max-w-5xl mx-auto mb-12 px-4">
-      {/* 2nd Place */}
+    <div className="flex items-end justify-center gap-6 md:gap-10 h-[550px] w-full max-w-5xl mx-auto mb-12 px-4">
+      {/* 3rd Place - Shortest */}
       <PodiumStep 
-        token={second} 
-        place={2} 
-        color="silver" 
-        height="h-[55%]" 
-        delay={0.2} 
-        value={formatValue(second)}
+        token={third} 
+        place={3} 
+        color="bronze" 
+        height="h-[30%]" 
+        delay={0.4}
+        value={formatValue(third)}
         label={label}
       />
 
-      {/* 1st Place - Much taller for emphasis */}
+      {/* 1st Place - Tallest for emphasis */}
       <PodiumStep 
         token={first} 
         place={1} 
@@ -52,14 +52,14 @@ export function Podium({ top3, type }: PodiumProps) {
         isWinner
       />
 
-      {/* 3rd Place */}
+      {/* 2nd Place - Middle height */}
       <PodiumStep 
-        token={third} 
-        place={3} 
-        color="bronze" 
-        height="h-[40%]" 
-        delay={0.4}
-        value={formatValue(third)}
+        token={second} 
+        place={2} 
+        color="silver" 
+        height="h-[60%]" 
+        delay={0.2} 
+        value={formatValue(second)}
         label={label}
       />
     </div>
