@@ -184,31 +184,7 @@ export default function Home() {
                 </li>
               </ul>
             </div>
-            <div>
-              <h3 className="font-bold mb-3 text-sm uppercase tracking-wide">
-                Follow
-              </h3>
-              <div className="flex items-center gap-3">
-                <a
-                  href="https://x.com/dgcoinz"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                  data-testid="link-twitter-creator"
-                >
-                  <Twitter className="w-5 h-5" />
-                </a>
-                <a
-                  href="https://github.com/codedgabriel/TopBags"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                  data-testid="link-github-repo"
-                >
-                  <Github className="w-5 h-5" />
-                </a>
-              </div>
-            </div>
+            
           </div>
           <div className="border-t border-border/30 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-sm text-muted-foreground">
