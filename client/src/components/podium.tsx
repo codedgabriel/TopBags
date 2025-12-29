@@ -27,7 +27,7 @@ export function Podium({ top3, type }: PodiumProps) {
 
   return (
     <div className="w-full max-w-5xl mx-auto mb-12 px-4">
-      <div className="grid grid-cols-3 gap-6 items-end h-[550px] justify-items-center">
+      <div className="flex items-end justify-center gap-6 md:gap-10 h-[550px] w-full">
         {/* 2nd Place - Left */}
         {second && (
           <PodiumCard
@@ -38,6 +38,7 @@ export function Podium({ top3, type }: PodiumProps) {
             color="silver"
             height={60}
             delay={0.2}
+            type={type}
           />
         )}
 
@@ -52,6 +53,7 @@ export function Podium({ top3, type }: PodiumProps) {
             height={100}
             delay={0}
             isWinner
+            type={type}
           />
         )}
 
@@ -65,6 +67,7 @@ export function Podium({ top3, type }: PodiumProps) {
             color="bronze"
             height={30}
             delay={0.4}
+            type={type}
           />
         )}
       </div>
@@ -81,6 +84,7 @@ function PodiumCard({
   height,
   delay,
   isWinner = false,
+  type,
 }: {
   token: TokenData;
   place: number;
@@ -90,6 +94,7 @@ function PodiumCard({
   height: number;
   delay: number;
   isWinner?: boolean;
+  type: "marketCap" | "earnings";
 }) {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
@@ -137,7 +142,7 @@ function PodiumCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5 }}
-      className="w-full flex flex-col items-center h-full"
+      className="flex flex-col items-center h-full cursor-pointer"
       onClick={handleCopy}
     >
       {/* Token Info */}
@@ -169,16 +174,21 @@ function PodiumCard({
         </p>
         <p className="text-xs text-muted-foreground uppercase mt-2 tracking-wide flex items-center gap-1">
           {label}
-          <motion.div
-            animate={{ opacity: copied ? 1 : 0, scale: copied ? 1 : 0.8 }}
-            transition={{ duration: 0.2 }}
-          >
-            {copied ? (
-              <Check className="w-3 h-3 text-primary" />
-            ) : (
-              <Copy className="w-3 h-3 text-primary opacity-50" />
-            )}
-          </motion.div>
+          {type === "earnings" && (
+            <motion.div
+              animate={{ opacity: copied ? 1 : 0, scale: copied ? 1 : 0.8 }}
+              transition={{ duration: 0.2 }}
+            >
+              {copied ? (
+                <Check className="w-3 h-3 text-primary" />
+              ) : (
+                <Copy className="w-3 h-3 text-primary opacity-50" />
+              )}
+            </motion.div>
+          )}
+          {type === "marketCap" && (
+            <Copy className="w-3 h-3 text-primary opacity-50" />
+          )}
         </p>
       </motion.div>
 
