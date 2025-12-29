@@ -26,43 +26,43 @@ export function Podium({ top3, type }: PodiumProps) {
 
   return (
     <div className="w-full max-w-5xl mx-auto mb-12 px-4">
-      <div className="flex items-end justify-center gap-8 h-[500px] w-full">
-        {/* 2nd Place - Left */}
+      <div className="flex items-end justify-center gap-8 h-96">
+        {/* 2nd Place - 55% height */}
         {second && (
-          <PodiumPosition
+          <PodiumCard
             token={second}
             place={2}
             value={formatValue(second)}
             label={label}
             color="silver"
-            heightPercent={55}
+            height="h-56"
             delay={0.2}
           />
         )}
 
-        {/* 1st Place - Center (Tallest) */}
+        {/* 1st Place - 100% height (tallest) */}
         {first && (
-          <PodiumPosition
+          <PodiumCard
             token={first}
             place={1}
             value={formatValue(first)}
             label={label}
             color="gold"
-            heightPercent={100}
+            height="h-96"
             delay={0}
             isWinner
           />
         )}
 
-        {/* 3rd Place - Right */}
+        {/* 3rd Place - 40% height */}
         {third && (
-          <PodiumPosition
+          <PodiumCard
             token={third}
             place={3}
             value={formatValue(third)}
             label={label}
             color="bronze"
-            heightPercent={40}
+            height="h-40"
             delay={0.4}
           />
         )}
@@ -71,13 +71,13 @@ export function Podium({ top3, type }: PodiumProps) {
   );
 }
 
-function PodiumPosition({
+function PodiumCard({
   token,
   place,
   value,
   label,
   color,
-  heightPercent,
+  height,
   delay,
   isWinner = false,
 }: {
@@ -86,12 +86,11 @@ function PodiumPosition({
   value: string;
   label: string;
   color: "gold" | "silver" | "bronze";
-  heightPercent: number;
+  height: string;
   delay: number;
   isWinner?: boolean;
 }) {
   const { toast } = useToast();
-  const [copied, setCopied] = useState(false);
 
   const colorConfig = {
     gold: {
@@ -119,12 +118,10 @@ function PodiumPosition({
 
   const handleClick = () => {
     navigator.clipboard.writeText(token.mint).then(() => {
-      setCopied(true);
       toast({
         title: "Address Copied!",
         description: `${token.symbol} contract address copied to clipboard`,
       });
-      setTimeout(() => setCopied(false), 2000);
     });
   };
 
@@ -133,12 +130,12 @@ function PodiumPosition({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5 }}
-      className="flex flex-col items-center h-full cursor-pointer"
+      className={`flex flex-col items-center cursor-pointer ${height}`}
       onClick={handleClick}
     >
-      {/* Token Info Card */}
-      <div className="flex flex-col items-center mb-4 text-center">
-        <div className="relative w-16 h-16 mb-3">
+      {/* Token Info - Fixed at top */}
+      <div className="flex flex-col items-center mb-3 text-center">
+        <div className="relative w-14 h-14 mb-2">
           <img
             src={token.image}
             alt={token.symbol}
@@ -147,30 +144,30 @@ function PodiumPosition({
               (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${token.symbol}&background=random`;
             }}
           />
-          <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${colorConfig.badge}`}>
+          <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${colorConfig.badge}`}>
             {place}
           </div>
         </div>
 
-        <h3 className={`font-bold text-lg ${isWinner ? "text-primary" : "text-white"}`}>
+        <h3 className={`font-bold text-base ${isWinner ? "text-primary" : "text-white"}`}>
           {token.symbol}
         </h3>
-        <p className={`font-mono font-bold text-sm mt-1 ${colorConfig.text}`}>
+        <p className={`font-mono font-bold text-xs mt-1 ${colorConfig.text}`}>
           {value}
         </p>
-        <p className="text-xs text-muted-foreground uppercase mt-2">
+        <p className="text-xs text-muted-foreground uppercase mt-1">
           {label}
         </p>
       </div>
 
-      {/* Podium Block */}
+      {/* Podium Block - Grows to fill remaining space */}
       <motion.div
-        initial={{ height: 0 }}
-        animate={{ height: `${heightPercent}%` }}
-        transition={{ delay: delay + 0.1, duration: 0.8, ease: "easeOut" }}
-        className={`w-32 rounded-t-2xl border-2 border-t-2 ${colorConfig.bg} ${colorConfig.border} ${colorConfig.glow} transition-all duration-300`}
+        initial={{ scaleY: 0 }}
+        animate={{ scaleY: 1 }}
+        transition={{ delay: delay + 0.1, duration: 0.6, ease: "easeOut" }}
+        className={`w-32 flex-grow rounded-t-2xl border-2 border-t-2 relative origin-bottom ${colorConfig.bg} ${colorConfig.border} ${colorConfig.glow}`}
       >
-        <div className={`absolute bottom-0 left-0 right-0 text-center text-6xl font-black select-none pb-4 opacity-10 ${colorConfig.text}`}>
+        <div className={`absolute bottom-2 left-0 right-0 text-center text-5xl font-black select-none opacity-10 ${colorConfig.text}`}>
           {place}
         </div>
       </motion.div>
