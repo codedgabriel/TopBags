@@ -42,7 +42,7 @@ export function Podium({ top3, type }: PodiumProps) {
             value={formatValue(second)}
             label={label}
             color="silver"
-            height="h-44 sm:h-56 md:h-60"
+            height="h-64 sm:h-60 md:h-60"
             delay={0.2}
           />
         )}
@@ -55,7 +55,7 @@ export function Podium({ top3, type }: PodiumProps) {
             value={formatValue(first)}
             label={label}
             color="gold"
-            height="h-52 sm:h-64 md:h-72"
+            height="h-80 sm:h-72 md:h-72"
             delay={0}
             isWinner
           />
@@ -69,7 +69,7 @@ export function Podium({ top3, type }: PodiumProps) {
             value={formatValue(third)}
             label={label}
             color="bronze"
-            height="h-40 sm:h-48 md:h-52"
+            height="h-56 sm:h-52 md:h-52"
             delay={0.4}
           />
         )}
