@@ -27,46 +27,47 @@ export function Podium({ top3, type }: PodiumProps) {
   return (
     <div className="w-full max-w-5xl mx-auto mb-12 px-4">
       <div className="flex items-end justify-center gap-8 h-80">
-        {/* 3rd Place - h-52 */}
-        {third && (
-          <PodiumCard
-            token={third}
-            place={3}
-            value={formatValue(third)}
-            label={label}
-            color="bronze"
-            height="h-52"
-            delay={0.4}
-          />
-        )}
+  {/* 2º - esquerda */}
+  {second && (
+    <PodiumCard
+      token={second}
+      place={2}
+      value={formatValue(second)}
+      label={label}
+      color="silver"
+      height="h-60"
+      delay={0.2}
+    />
+  )}
 
-        {/* 1st Place - h-72 (tallest) */}
-        {first && (
-          <PodiumCard
-            token={first}
-            place={1}
-            value={formatValue(first)}
-            label={label}
-            color="gold"
-            height="h-72"
-            delay={0}
-            isWinner
-          />
-        )}
+  {/* 1º - centro */}
+  {first && (
+    <PodiumCard
+      token={first}
+      place={1}
+      value={formatValue(first)}
+      label={label}
+      color="gold"
+      height="h-72"
+      delay={0}
+      isWinner
+    />
+  )}
 
-        {/* 2nd Place - h-60 (right) */}
-        {second && (
-          <PodiumCard
-            token={second}
-            place={2}
-            value={formatValue(second)}
-            label={label}
-            color="silver"
-            height="h-60"
-            delay={0.2}
-          />
-        )}
-      </div>
+  {/* 3º - direita */}
+  {third && (
+    <PodiumCard
+      token={third}
+      place={3}
+      value={formatValue(third)}
+      label={label}
+      color="bronze"
+      height="h-52"
+      delay={0.4}
+    />
+  )}
+</div>
+
     </div>
   );
 }
