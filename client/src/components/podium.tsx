@@ -29,18 +29,18 @@ export function Podium({ top3, type }: PodiumProps) {
 
   return (
     <div className="flex items-end justify-center gap-6 md:gap-10 h-[550px] w-full max-w-5xl mx-auto mb-12 px-4">
-      {/* 3rd Place - Shortest */}
+      {/* 2nd Place - Middle height (Left) */}
       <PodiumStep 
-        token={third} 
-        place={3} 
-        color="bronze" 
-        height="h-[30%]" 
-        delay={0.4}
-        value={formatValue(third)}
+        token={second} 
+        place={2} 
+        color="silver" 
+        height="h-[60%]" 
+        delay={0.2} 
+        value={formatValue(second)}
         label={label}
       />
 
-      {/* 1st Place - Tallest for emphasis */}
+      {/* 1st Place - Tallest for emphasis (Center) */}
       <PodiumStep 
         token={first} 
         place={1} 
@@ -52,14 +52,14 @@ export function Podium({ top3, type }: PodiumProps) {
         isWinner
       />
 
-      {/* 2nd Place - Middle height */}
+      {/* 3rd Place - Shortest (Right) */}
       <PodiumStep 
-        token={second} 
-        place={2} 
-        color="silver" 
-        height="h-[60%]" 
-        delay={0.2} 
-        value={formatValue(second)}
+        token={third} 
+        place={3} 
+        color="bronze" 
+        height="h-[30%]" 
+        delay={0.4}
+        value={formatValue(third)}
         label={label}
       />
     </div>
