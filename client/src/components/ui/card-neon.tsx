@@ -34,11 +34,11 @@ export const CardNeon = React.forwardRef<HTMLDivElement, CardNeonProps>(
         {...props}
       >
         {/* Corner Accents for that 'Tech' look */}
-        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-current opacity-50" />
-        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-current opacity-50" />
-        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-current opacity-50" />
-        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-current opacity-50" />
-        
+        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-current opacity-0" />
+        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-current opacity-0" />
+        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-current opacity-0" />
+        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-current opacity-0" />
+
         {children}
       </div>
     );
