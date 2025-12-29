@@ -26,35 +26,8 @@ export function Podium({ top3, type }: PodiumProps) {
 
   return (
     <div className="w-full max-w-5xl mx-auto mb-12 px-4">
-      <div className="flex items-end justify-center gap-8 h-80">
-        {/* 2nd Place - 60% height */}
-        {second && (
-          <PodiumCard
-            token={second}
-            place={2}
-            value={formatValue(second)}
-            label={label}
-            color="silver"
-            height="h-48"
-            delay={0.2}
-          />
-        )}
-
-        {/* 1st Place - 100% height (tallest) */}
-        {first && (
-          <PodiumCard
-            token={first}
-            place={1}
-            value={formatValue(first)}
-            label={label}
-            color="gold"
-            height="h-80"
-            delay={0}
-            isWinner
-          />
-        )}
-
-        {/* 3rd Place - 35% height */}
+      <div className="flex items-end justify-center gap-8 h-72">
+        {/* 3rd Place - h-46 */}
         {third && (
           <PodiumCard
             token={third}
@@ -62,8 +35,35 @@ export function Podium({ top3, type }: PodiumProps) {
             value={formatValue(third)}
             label={label}
             color="bronze"
-            height="h-28"
+            height="h-46"
             delay={0.4}
+          />
+        )}
+
+        {/* 1st Place - h-66 (tallest) */}
+        {first && (
+          <PodiumCard
+            token={first}
+            place={1}
+            value={formatValue(first)}
+            label={label}
+            color="gold"
+            height="h-66"
+            delay={0}
+            isWinner
+          />
+        )}
+
+        {/* 2nd Place - h-56 */}
+        {second && (
+          <PodiumCard
+            token={second}
+            place={2}
+            value={formatValue(second)}
+            label={label}
+            color="silver"
+            height="h-56"
+            delay={0.2}
           />
         )}
       </div>
