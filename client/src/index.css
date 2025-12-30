@@ -1,44 +1,44 @@
-@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Apple-inspired Light Theme */
-  --background: 0 0% 100%;     /* White */
-  --foreground: 0 0% 0%;       /* Black */
+  /* Crypto Terminal Theme */
+  --background: 0 0% 0%;       /* Pure Black */
+  --foreground: 0 0% 100%;     /* White */
   
-  --primary: 221 90% 56%;      /* Blue (Apple ecosystem) */
-  --primary-foreground: 0 0% 100%;
+  --primary: 109 100% 61%;     /* Neon Green #39ff14 */
+  --primary-foreground: 0 0% 0%;
   
-  --card: 0 0% 100%;           /* White cards */
-  --card-foreground: 0 0% 0%;
+  --card: 0 0% 5%;            /* Slightly lighter black for cards */
+  --card-foreground: 0 0% 100%;
   
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 0%;
+  --popover: 0 0% 5%;
+  --popover-foreground: 0 0% 100%;
   
-  --secondary: 0 0% 95%;       /* Light gray */
-  --secondary-foreground: 0 0% 0%;
+  --secondary: 0 0% 15%;      /* Dark Gray */
+  --secondary-foreground: 0 0% 100%;
   
-  --muted: 0 0% 100%;
-  --muted-foreground: 0 0% 40%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 60%;
   
-  --accent: 221 90% 56%;
-  --accent-foreground: 0 0% 100%;
+  --accent: 109 100% 61%;
+  --accent-foreground: 0 0% 0%;
   
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --border: 0 0% 90%;
-  --input: 0 0% 95%;
-  --ring: 221 90% 56%;
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --ring: 109 100% 61%;
   
-  --radius: 0.75rem; /* Rounded corners like Apple */
+  --radius: 0.25rem; /* Sharp, technical corners */
   
   /* Fonts */
-  --font-mono: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-display: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Fira Code', monospace;
+  --font-display: 'Space Mono', monospace;
 }
 
 @layer base {
@@ -47,37 +47,46 @@
   }
   body {
     @apply bg-background text-foreground font-mono antialiased selection:bg-primary selection:text-primary-foreground;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-semibold;
+    @apply font-display tracking-tight;
   }
 }
 
 @layer utilities {
+  .text-neon {
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.5), 0 0 20px rgba(57, 255, 20, 0.3);
+  }
+  
+  .border-neon {
+    box-shadow: 0 0 5px rgba(57, 255, 20, 0.5), inset 0 0 5px rgba(57, 255, 20, 0.2);
+  }
+  
   .bg-grid-pattern {
     background-size: 40px 40px;
     background-image: 
-      linear-gradient(to right, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+      linear-gradient(to right, rgba(57, 255, 20, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(57, 255, 20, 0.05) 1px, transparent 1px);
   }
 }
 
-/* Minimal Scrollbar */
+/* Custom Scrollbar for terminal look */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #0a0a0a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d0d0d0;
-  border-radius: 4px;
+  background: #333;
+  border: 1px solid #000;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: var(--primary);
 }
