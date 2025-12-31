@@ -1,6 +1,7 @@
-import { useTopBags } from "@/hooks/use-top-bags";
+import { useTopBags, TokenData } from "@/hooks/use-top-bags";
 import { Podium } from "@/components/podium";
 import { LeaderboardList } from "@/components/leaderboard-list";
+import { TokenDetailModal } from "@/components/token-detail-modal";
 import {
   Loader2,
   Terminal,
@@ -23,6 +24,13 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"marketCap" | "earnings">(
     "marketCap",
   );
+  const [selectedToken, setSelectedToken] = useState<TokenData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleTokenClick = (token: TokenData) => {
+    setSelectedToken(token);
+    setIsModalOpen(true);
+  };
 
   // Sort tokens based on active tab logic
   const sortedTokens = [...tokens].sort((a, b) => {
@@ -119,7 +127,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <Podium top3={top3} type={activeTab} />
+              <Podium top3={top3} type={activeTab} onTokenClick={handleTokenClick} />
 
               <div className="my-8 flex items-center gap-4">
                 <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent flex-grow" />
@@ -129,11 +137,17 @@ export default function Home() {
                 <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent flex-grow" />
               </div>
 
-              <LeaderboardList tokens={sortedTokens} type={activeTab} />
+              <LeaderboardList tokens={sortedTokens} type={activeTab} onTokenClick={handleTokenClick} />
             </motion.div>
           </div>
         )}
       </main>
+
+      <TokenDetailModal
+        token={selectedToken}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
 
       <footer className="border-t border-primary/10 py-8 mt-12 bg-gradient-to-t from-primary/5 to-transparent">
         <div className="container mx-auto px-4">

@@ -5,9 +5,10 @@ import { useToast } from "@/hooks/use-toast";
 interface PodiumProps {
   top3: TokenData[];
   type: "marketCap" | "earnings";
+  onTokenClick?: (token: TokenData) => void;
 }
 
-export function Podium({ top3, type }: PodiumProps) {
+export function Podium({ top3, type, onTokenClick }: PodiumProps) {
   const first = top3[0];
   const second = top3[1];
   const third = top3[2];
@@ -44,6 +45,7 @@ export function Podium({ top3, type }: PodiumProps) {
             color="silver"
             height="h-64 sm:h-60 md:h-60"
             delay={0.2}
+            onTokenClick={onTokenClick}
           />
         )}
 
@@ -58,6 +60,7 @@ export function Podium({ top3, type }: PodiumProps) {
             height="h-80 sm:h-72 md:h-72"
             delay={0}
             isWinner
+            onTokenClick={onTokenClick}
           />
         )}
 
@@ -71,6 +74,7 @@ export function Podium({ top3, type }: PodiumProps) {
             color="bronze"
             height="h-56 sm:h-52 md:h-52"
             delay={0.4}
+            onTokenClick={onTokenClick}
           />
         )}
       </div>
@@ -87,6 +91,7 @@ function PodiumCard({
   height,
   delay,
   isWinner = false,
+  onTokenClick,
 }: {
   token: TokenData;
   place: number;
@@ -96,6 +101,7 @@ function PodiumCard({
   height: string;
   delay: number;
   isWinner?: boolean;
+  onTokenClick?: (token: TokenData) => void;
 }) {
   const { toast } = useToast();
 
@@ -124,12 +130,7 @@ function PodiumCard({
   }[color];
 
   const handleClick = () => {
-    navigator.clipboard.writeText(token.mint).then(() => {
-      toast({
-        title: "Address Copied!",
-        description: `${token.symbol} contract address copied to clipboard`,
-      });
-    });
+    onTokenClick?.(token);
   };
 
   return (
@@ -139,6 +140,7 @@ function PodiumCard({
       transition={{ delay, duration: 0.5 }}
       className={`flex flex-col items-center cursor-pointer ${height}`}
       onClick={handleClick}
+      data-testid={`card-podium-${token.mint}`}
     >
       {/* Token info */}
       <div className="flex flex-col items-center mb-3 text-center">
