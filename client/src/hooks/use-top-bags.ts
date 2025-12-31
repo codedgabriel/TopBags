@@ -49,6 +49,20 @@ const DexScreenerResponseSchema = z.object({
     }).optional(),
     fdv: z.number().optional(),
     marketCap: z.number().optional(),
+    info: z.object({
+      imageUrl: z.string().optional(),
+      header: z.string().optional(),
+      openGraph: z.string().optional(),
+      description: z.string().optional(),
+      websites: z.array(z.object({
+        label: z.string().optional(),
+        url: z.string().optional(),
+      })).optional(),
+      socials: z.array(z.object({
+        type: z.string().optional(),
+        url: z.string().optional(),
+      })).optional(),
+    }).optional(),
   })).optional()
 });
 
@@ -104,6 +118,18 @@ export interface TokenData {
   dexId?: string;
   pairAddress?: string;
   dexscreenerUrl?: string;
+  
+  // Socials & Info
+  description?: string;
+  websites?: { label?: string; url?: string }[];
+  socials?: { type?: string; url?: string }[];
+  
+  // Creator Info
+  creator?: {
+    username?: string;
+    twitter?: string;
+    profileUrl?: string;
+  };
   
   // Status
   loaded: boolean;
@@ -162,6 +188,11 @@ async function fetchTokenMarketData(mint: string) {
       dexId: pair.dexId,
       pairAddress: pair.pairAddress,
       dexscreenerUrl: pair.url,
+
+      // Socials & Info
+      description: pair.info?.description,
+      websites: pair.info?.websites,
+      socials: pair.info?.socials,
     };
   } catch (e) {
     console.error(`Failed to fetch market data for ${mint}`, e);
@@ -169,27 +200,31 @@ async function fetchTokenMarketData(mint: string) {
   }
 }
 
-// 2. Fetch Earnings from Bags SDK via Backend
-async function fetchTokenEarningsData(mint: string) {
+// 2. Fetch Earnings & Creator via Backend Proxy
+async function fetchTokenEnhancedData(mint: string) {
   try {
-    const res = await fetch(`/api/token-fees/${mint}`);
-    
-    if (!res.ok) {
-      console.warn(`Failed to fetch fees for ${mint}: ${res.status}`);
-      return null;
-    }
+    const res = await fetch(`/api/token-details/${mint}`);
+    if (!res.ok) return null;
     
     const data = await res.json();
+    const bagsData = data.metadata;
+    const fees = data.fees;
     
-    // Return fees in USD (or use SOL value)
     return {
-      totalClaimed: data.feesSOL || 0,
-      totalClaimedUsd: data.feesUSD || 0,
-      feesSOL: data.feesSOL || 0,
-      feesLamports: data.feesLamports || 0,
+      totalClaimed: fees.sol || 0,
+      totalClaimedUsd: fees.usd || 0,
+      feesSOL: fees.sol || 0,
+      feesLamports: fees.lamports || 0,
+      creator: bagsData?.creator ? {
+        username: bagsData.creator.username,
+        twitter: bagsData.creator.twitter || bagsData.creator.twitterUsername,
+        profileUrl: `https://bags.fm/user/${bagsData.creator.username}`,
+        displayName: bagsData.creator.displayName || bagsData.creator.username,
+        avatar: bagsData.creator.avatarUrl || bagsData.creator.image
+      } : undefined
     };
   } catch (e) {
-    console.error(`Failed to fetch earnings data for ${mint}:`, e);
+    console.error(`Failed to fetch enhanced data for ${mint}:`, e);
     return null;
   }
 }
@@ -206,9 +241,9 @@ export function useTopBags() {
         await new Promise(resolve => setTimeout(resolve, index * 50));
         
         // Fetch both data sources in parallel for this token
-        const [marketData, earningsData] = await Promise.all([
+        const [marketData, enhancedData] = await Promise.all([
           fetchTokenMarketData(mint),
-          fetchTokenEarningsData(mint)
+          fetchTokenEnhancedData(mint)
         ]);
 
         return {
@@ -245,14 +280,22 @@ export function useTopBags() {
           liquidityQuote: marketData?.liquidityQuote,
           
           // Use totalClaimedUsd if available, otherwise totalClaimed
-          totalEarnings: earningsData?.totalClaimedUsd || earningsData?.totalClaimed || 0,
-          feesSOL: earningsData?.feesSOL,
-          feesLamports: earningsData?.feesLamports,
+          totalEarnings: enhancedData?.totalClaimedUsd || enhancedData?.totalClaimed || 0,
+          feesSOL: enhancedData?.feesSOL,
+          feesLamports: enhancedData?.feesLamports,
           
           // Links
           dexId: marketData?.dexId,
           pairAddress: marketData?.pairAddress,
           dexscreenerUrl: marketData?.dexscreenerUrl,
+          
+          // Socials & Info
+          description: marketData?.description,
+          websites: marketData?.websites,
+          socials: marketData?.socials,
+
+          // Creator Info
+          creator: enhancedData?.creator,
           
           loaded: !!marketData // Consider loaded if we got market data at least
         } as TokenData;
